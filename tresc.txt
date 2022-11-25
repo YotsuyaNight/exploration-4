@@ -1,23 +1,10 @@
 Zadanie 1.
-
- 
-
 Stwórz indeks odwrotny do 3 pobranych opisów oraz szczegółów aut z portalu otomoto.pl dla marki Renault model Megane. W indeksie odwrotnym oprócz numeracji dokumentu w którym występuje dane słowo zawrzyj osobno link do strony oraz liczbę wystąpień danego słowa.
-
- 
-
 https://www.geeksforgeeks.org/inverted-index/
-
 https://nlp.stanford.edu/IR-book/html/htmledition/a-first-take-at-building-an-inverted-index-1.html
 
- 
-
 Zadanie 2.
-
 Dla marki Renault model Megane wszystkie generacje : pobierz z użyciem Pythona oraz Selenium wszystkie informacje z sekcji dodatkowych, szczegółów, oraz opisu jak również ściągnij fotografie do danego modelu z województwa łódzkiego oraz mazowieckiego.
-
 Fotografie zapisz do katalogow z odpowiadającym ID danego dokumentu.
-
 Na wszystkich danych z opisów, szczegółach oraz informacjach dodatkowych wygeneruj indeks odwrotny przeprowadź stemming następnie zaproponuj klasteryzację pojazdów na kilka grup np. mocno zużyte (duży przebieg , stary rocznik, słabe wyposażenie bezpieczeństwa), średnio zużyte , bardzo  uwzględniając przy tym średnie ceny i elementy wyposażenia dla danego roku pojazdu korzystając z indeksu odwrotnego i stemmingu.
-
 Wypisz do pliku indeks odwrotny zawrzyj najbardziej popularne wyposażenie, wylistuj typy sklasteryzowane i ID dokumentów, które w nich się znajdują. Spróbuj przygotować test do Cypress’a który wyszukuję te pojazdy które zawierają się w konkretnych grupach.
