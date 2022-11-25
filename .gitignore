@@ -1,3 +1,5 @@
 __pycache__
 scrapped_data/pics/*
+scrapped_data/data/*
+scrapped_data/documents/*
 !.keep

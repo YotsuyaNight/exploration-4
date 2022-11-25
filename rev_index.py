@@ -1,23 +1,17 @@
 from dataclasses import dataclass
-import nltk
 import glob
-import re
-
-nltk.download('punkt')
 
 @dataclass
 class IndexItem:
     doc_id: int
     doc_occurences: int
 
-def __read_files__():
+def read_all_documents():
     files = []
     for path in glob.glob('documents/*.txt'):
         with open(path, encoding='utf-8') as file:
-            contents = file.read()
-            stripped_contents = re.sub('[^\w ]', '', contents)
-            tokenized_content = nltk.word_tokenize(stripped_contents)
-            files.append(tokenized_content)
+            contents = file.read().split('\n')
+            files.append(contents)
     return files
 
 def build_rev_index(doc_collection):
@@ -36,4 +30,4 @@ def __index_document__(doc):
         index[word] = index.get(word, 0) + 1
     return index.items()
 
-print(build_rev_index(__read_files__()))
+print(build_rev_index(read_all_documents()))
