@@ -1,30 +1,32 @@
 from dataclasses import dataclass
 import glob
+import re
 
 @dataclass
 class IndexItem:
-    doc_id: int
+    doc_id: str
     doc_occurences: int
 
 def read_all_documents():
-    files = []
-    for path in glob.glob('documents/*.txt'):
+    files = {}
+    for path in glob.glob('scrapped_data/documents/*.txt'):
         with open(path, encoding='utf-8') as file:
-            contents = file.read().split('\n')
-            files.append(contents)
+            id = re.search("\\\\(.+)\.txt", path).groups()[0]
+            contents = file.read().split("\n")
+            files[id] = contents
     return files
 
 def build_rev_index(doc_collection):
     index = {}
-    doc_maps = map(__index_document__, doc_collection)
-    for i, doc_map in enumerate(doc_maps):
+    doc_maps = dict((id, __summarize_doc_words__(contents)) for id, contents in doc_collection.items())
+    for id, doc_map in doc_maps.items():
         for word_data in doc_map:
             table = index.get(word_data[0], [])
-            table.append(IndexItem(i, word_data[1]))
+            table.append(IndexItem(id, word_data[1]))
             index[word_data[0]] = table
     return index
 
-def __index_document__(doc):
+def __summarize_doc_words__(doc):
     index = {}
     for word in sorted(doc):
         index[word] = index.get(word, 0) + 1
