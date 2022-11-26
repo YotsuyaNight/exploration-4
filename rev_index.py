@@ -16,6 +16,13 @@ def read_all_documents():
             files[id] = contents
     return files
 
+def fetch_phrase_freq_from_index(index, phrase, id):
+    if phrase in index:
+        for item in index[phrase]:
+            if item.doc_id == id:
+                return item.doc_occurences
+    return 0
+
 def build_rev_index(doc_collection):
     index = {}
     doc_maps = dict((id, __summarize_doc_words__(contents)) for id, contents in doc_collection.items())

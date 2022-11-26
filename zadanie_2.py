@@ -12,6 +12,7 @@ nltk.download('punkt')
 
 main_page = "https://www.otomoto.pl/osobowe/renault/megane"
 
+# Helpers
 def __tokenize_document__(contents):
     lowercase_contents = contents.lower()
     stripped_contents = re.sub('\n|\t', ' ', lowercase_contents)
@@ -78,8 +79,6 @@ for link in listing_links:
         file.write("\n".join(description))
     with open(data_filepath, "w+", encoding="utf-8") as file:
         file.write(json.dumps(main_params, indent=4, ensure_ascii=False))
-
-sleep(3)
 
 # Quit
 driver.quit()
