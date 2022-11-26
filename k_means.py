@@ -7,7 +7,7 @@ from rev_index import read_all_documents, build_rev_index, fetch_phrase_freq_fro
 @dataclass
 class CarObject:
     id: str
-    features: list[float]
+    features: np.ndarray
 
 def __read_car_data__(id):
     data_filepath = f'scrapped_data/data/{id}.txt'
@@ -16,9 +16,6 @@ def __read_car_data__(id):
 
 def _clean_numeric__(value):
     return int(re.sub('(cm3)|\D', '', value))
-
-def __euclidean_distance__(v1, v2):
-    return sum([(x[0] - x[1])**2 for x in zip(v1, v2)])
 
 documents = read_all_documents()
 rev_index = build_rev_index(documents)
@@ -33,7 +30,7 @@ for id in documents.keys():
         _clean_numeric__(car_data["Moc"]),
         _clean_numeric__(car_data["Pojemność skokowa"]),
     ]
-    vectors.append(CarObject(id, vector))
+    vectors.append(CarObject(id, np.array(vector)))
 
 # Normalizing feature vectors
 features_count = len(vectors[0].features)
@@ -46,27 +43,33 @@ for i in range(0, features_count):
     for vector in vectors:
         vector.features[i] = (vector.features[i] - minval) / (maxval - minval) * 100
 
-print(vectors)
-
 # Prepare centroids
 cluster_count = 3
 centroids = []
 clusters = []
 for i in range(0, cluster_count):
-    centroid = [100 / (cluster_count - 1) * i] * features_count
-    centroids.append(centroid)
+    value = 100 / (cluster_count - 1) * i
+    centroids.append(np.ones(features_count) * value)
 
 # Run k-means clustering
-passes = 1
+passes = 20
 for _ in range(0, passes):
-    new_clusters = [[] for _ in range(i, cluster_count)]
+    new_clusters = [[] for _ in range(0, cluster_count)]
     # Assign objects to clusters based on centroids
     for vector in vectors:
-        distances_from_centroids = [__euclidean_distance__(centroid, vector.features) for centroid in centroids]
+        distances_from_centroids = [np.linalg.norm(centroid - vector.features) for centroid in centroids]
         assignment = distances_from_centroids.index(min(distances_from_centroids))
         new_clusters[assignment].append(vector)
     # Recalculate centroids
     clusters = new_clusters
     for i, cluster in enumerate(clusters):
-        for j in range(0, features_count):
-            centroids[i][j] = sum([x[j] for x in cluster]) / len(cluster)
+        if not cluster: continue
+        cluster_elems = np.array([vector.features for vector in cluster])
+        centroids[i] = np.average(cluster_elems, axis=0)
+
+# Save clustering result
+for i, cluster in enumerate(clusters):
+    cluster_filepath = f'scrapped_data/clusters/{i}.txt'
+    with open(cluster_filepath, "w+", encoding="utf-8") as file:
+        for vector in cluster:
+            file.write(vector.id + "\n")
