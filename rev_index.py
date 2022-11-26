@@ -31,5 +31,3 @@ def __summarize_doc_words__(doc):
     for word in sorted(doc):
         index[word] = index.get(word, 0) + 1
     return index.items()
-
-print(build_rev_index(read_all_documents()))

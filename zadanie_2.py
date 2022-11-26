@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 import re
 import os
+import json
 import urllib
 import nltk
 import re
@@ -62,7 +63,7 @@ for link in listing_links:
     for param_el in driver.find_elements(By.CLASS_NAME, "offer-params__item"):
         key = param_el.find_element(By.CLASS_NAME, "offer-params__label").get_attribute("innerText")
         val = param_el.find_element(By.CLASS_NAME, "offer-params__value").get_attribute("innerText")
-        print((key, val))
+        main_params[key] = val
 
     # Parse additional features into document tokens
     features = [el.get_attribute("innerText") for el in driver.find_elements(By.CLASS_NAME, "parameter-feature-item")]
@@ -75,6 +76,8 @@ for link in listing_links:
         file.write("\n".join(features))
         file.write("\n")
         file.write("\n".join(description))
+    with open(data_filepath, "w+", encoding="utf-8") as file:
+        file.write(json.dumps(main_params, indent=4, ensure_ascii=False))
 
 sleep(3)
 
